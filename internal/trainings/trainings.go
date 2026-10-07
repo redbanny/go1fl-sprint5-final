@@ -57,12 +57,12 @@ func (t Training) ActionInfo() (string, error) {
 	var err error
 	distance := spentenergy.Distance(t.Steps, t.Height)
 	if distance <= 0 {
-		return "", negativeResult
+		return "", fmt.Errorf("Distance: %w", negativeResult)
 	}
 
 	meanSpeed := spentenergy.MeanSpeed(t.Steps, t.Height, t.Duration)
 	if meanSpeed <= 0 {
-		return "", negativeResult
+		return "", fmt.Errorf("Mean speed: %w", negativeResult)
 	}
 
 	switch strings.ToLower(t.TrainingType) {
@@ -75,7 +75,7 @@ func (t Training) ActionInfo() (string, error) {
 	}
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("WalkingSpentCalories: %w", err)
 	}
 
 	result := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",

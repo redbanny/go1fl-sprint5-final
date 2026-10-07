@@ -29,18 +29,18 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 
 	stepsCount, err := strconv.Atoi(splitData[0])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid steps format: %w", err)
 	}
 	if stepsCount <= 0 {
-		return negativeArgException
+		return fmt.Errorf("steps %w", negativeArgException)
 	}
 
 	trainingDuration, err := time.ParseDuration(splitData[1])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid training duration format: %w", err)
 	}
 	if trainingDuration <= 0 {
-		return negativeArgException
+		return fmt.Errorf("training duration %w", negativeArgException)
 	}
 
 	ds.Steps = stepsCount
@@ -55,12 +55,12 @@ func (ds DaySteps) ActionInfo() (string, error) {
 
 	distance := spentenergy.Distance(ds.Steps, ds.Height)
 	if distance <= 0 {
-		return "", negativeResult
+		return "", fmt.Errorf("ActionInfo: calculate distance error => %w", negativeResult)
 	}
 
 	kkalCount, err = spentenergy.WalkingSpentCalories(ds.Steps, ds.Weight, ds.Height, ds.Duration)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("ActionInfo: calculate kkalCount error: %w", err)
 	}
 
 	result := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", ds.Steps, distance, kkalCount)
